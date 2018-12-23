@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <script src="/socket.io/socket.io.js"></script>
+    <title>Document</title>
+    <style>
+        ::-webkit-scrollbar-thumb:horizontal { /*水平滚动条的样式*/
+    width: 4px;
+    background-color: #CCCCCC;
+    -webkit-border-radius: 6px;
+}
+::-webkit-scrollbar-track-piece {
+    background-color: #fff; /*滚动条的背景颜色*/
+    -webkit-border-radius: 0; /*滚动条的圆角宽度*/
+}
+::-webkit-scrollbar {
+    width: 10px; /*滚动条的宽度*/
+    height: 8px; /*滚动条的高度*/
+}
+::-webkit-scrollbar-thumb:vertical { /*垂直滚动条的样式*/
+    height: 50px;
+    background-color: #999;
+    -webkit-border-radius: 4px;
+    outline: 2px solid #fff;
+    outline-offset: -2px;
+    border: 2px solid #fff;
+}
+::-webkit-scrollbar-thumb:hover { /*滚动条的hover样式*/
+    height: 50px;
+    background-color: #9f9f9f;
+    -webkit-border-radius: 4px;
+}
+
+        .progress{
+        	/*margin-left: 5px;*/
+    		height: 5px;
+    		width: 300px;
+    		background: #bbb4;
+    		/*position: absolute;*/
+    	}
+		#bar{
+    		background: #7ff;
+    		position: relative;
+    		width: 0px;
+    	}
+    	#container{
+    		display: flex;
+    		align-items: center;
+    		margin:center;
+    		flex-direction: column;
+    	}
+    	body{
+    		display: flex;
+    		align-items: center;
+    		justify-content: center;
+    		height: 100vh;
+    		flex-direction: row;
+    		cursor: default;
+    	}
+    	#volume{
+			margin-left: 3px;
+    	}
+    	#long{
+    		display: flex;
+    		align-items: center;
+    	}
+    	.songlist{
+    		list-style: none;
+    		border: 0.5px solid #aff3 ;
+    		background: #aff1;
+    	}
+    	.songlist:hover{
+			background: #1ff3;
+    	}
+		#list{
+			height: 100px;
+			overflow-y: scroll;
+
+		}
+    </style>
+</head>
+
+<body>
+	<!-- <video src="" id="video"></video> -->
+    <audio>
+        <source src="" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+    <div id='container'>
+        <div id="long">
+            <div id="play"><svg t="1545519540091" class="icon" style="" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1091" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20">
+                    <defs>
+                        <style type="text/css"></style>
+                    </defs>
+                    <path d="M185 956.9c-17.6 0-35.2-4.8-51-14.3-29.8-18-47.7-49.6-47.7-84.5V165.4c0-35 17.9-66.6 47.9-84.6s66.4-18.9 97.2-2.5l654.4 349.1c32.3 17.3 52.4 50.7 52.3 87.4-0.1 36.7-20.4 70-52.8 87.1L231 945.5c-14.6 7.6-30.3 11.4-46 11.4z m27.4-746V813l568.8-298.7-568.8-303.4z" fill="#555555" p-id="1092"></path>
+                </svg></div>
+            <div id="pro" class='progress'>
+                <div class='progress' id='bar'></div>
+            </div>
+            <div id="volume">
+                <svg t="1545521586630" class="icon" style="" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2053" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20">
+                    <defs>
+                        <style type="text/css"></style>
+                    </defs>
+                    <path d="M581.5 221.5c-11.3-7.6-25.7-9.1-38.3-3.9L278.8 340.9H169c-22.6 0-41 18.4-41 41v260.4c0 22.6 18.4 41 41 41h109.8L542.1 806l1.2 0.5c5 2 10.2 3 15.5 3 8 0 16-2.4 22.8-7a40.92 40.92 0 0 0 18.1-34v-513c-0.1-13.7-6.8-26.4-18.2-34zM549 753.4L297.6 636l-1.1-0.5c-4.9-2-10.1-3-15.5-3H178.6v-241H281c5.3 0 10.5-1 15.5-3L549 270.6v482.8zM708 357.9c-9.9-9.9-25.9-9.9-35.8 0-9.9 9.9-9.9 25.9 0 35.8 63.2 63.2 63.2 166.2 0 229.4-9.9 9.9-9.9 25.9 0 35.8 4.9 4.9 11.4 7.4 17.9 7.4s13-2.5 17.9-7.4c82.9-83 82.9-218 0-301z" p-id="2054"></path>
+                    <path d="M796.8 268.5c-9.9-9.9-25.9-9.9-35.8 0-9.9 9.9-9.9 25.9 0 35.8 112.5 112.5 112.5 295.6 0 408.2-9.9 9.9-9.9 25.9 0 35.8 4.9 4.9 11.4 7.4 17.9 7.4s13-2.5 17.9-7.4c132.3-132.3 132.3-347.5 0-479.8z" p-id="2055"></path>
+                </svg>
+            </div>
+        </div>
+        <div id="title"></div>
+    </div>
+    <div>
+        <ul id='list'>
+        </ul>
+    </div>
+    <script>
+    let constraints = { audio: true, video: { width: 1280, height: 720 } };
+
+    navigator.mediaDevices.getUserMedia(constraints)
+        .then(function(mediaStream) {
+            let video = document.querySelector('#video');
+            video.srcObject = mediaStream;
+            video.onloadedmetadata = function(e) {
+                video.play();
+            };
+        })
+        .catch(function(err) { console.log(err.name + ": " + err.message); })
+    let socket = io('http://' + window.document.location.host)
+    let music = {}
+    let fired = true
+    let playlist = []
+    const audio = document.querySelector('audio')
+    const container = document.querySelector('#container')
+    const source = document.querySelector('audio')
+    const pro = document.querySelector('#pro')
+    const bar = document.querySelector('#bar')
+    const play = document.querySelector('#play')
+    const volume = document.querySelector('#volume')
+    const list = document.querySelector('#list')
+    const title = document.querySelector('#title')
+
+    const changeMusic = () => {
+        audio.currentTime = music.time
+        audio.volume = music.volume
+        if (music.paused) {
+            audio.pause()
+        } else audio.play()
+        // audio.src = music.src
+        bar.style.width = 300 * (music.time / audio.duration) + 'px'
+
+    }
+
+    const switchSong = song => {
+        console.log(song)
+        music.src = song
+        audio.src = "music/" + song
+        music.time = 0
+        title.innerHTML = music.src
+
+        socket.emit('switchSong', JSON.stringify(music))
+    }
+
+    const changeTitle = () => {
+        title.innerHTML = music.src
+    }
+
+
+    socket.on('on', function(data) {
+        // renew the position of balls
+        music = JSON.parse(data)
+        source.src = 'music/' + music.src
+        title.innerHTML = music.src
+    })
+
+    socket.on('playlist', function(data) {
+        // renew the position of balls
+        playlist = JSON.parse(data).playlist
+        playlist.forEach(s => {
+            list.innerHTML += `<li class='songlist' onclick='switchSong("${s}")'><div>${s}</div></li>`
+        })
+
+    })
+
+    socket.on('play', function(data) {
+        // renew the position of balls
+        music = JSON.parse(data)
+        switchPlay()
+        changeMusic()
+        console.log(music)
+    })
+
+    socket.on('switchSong', function(data) {
+        // renew the position of balls
+        music = JSON.parse(data)
+        switchPlay()
+        audio.src = "music/" + music.src
+        title.innerHTML = music.src
+
+        // changeMusic()
+        console.log(music)
+    })
+
+    const switchPlay = () => {
+        if (music.paused) {
+            play.innerHTML = '<svg t="1545519540091" class="icon" style="" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1091" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20"><defs><style type="text/css"></style></defs><path d="M185 956.9c-17.6 0-35.2-4.8-51-14.3-29.8-18-47.7-49.6-47.7-84.5V165.4c0-35 17.9-66.6 47.9-84.6s66.4-18.9 97.2-2.5l654.4 349.1c32.3 17.3 52.4 50.7 52.3 87.4-0.1 36.7-20.4 70-52.8 87.1L231 945.5c-14.6 7.6-30.3 11.4-46 11.4z m27.4-746V813l568.8-298.7-568.8-303.4z" fill="#555555" p-id="1092"></path></svg>'
+        } else {
+            play.innerHTML = '<svg t="1545519893916" class="icon" style="" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1818" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20"><defs><style type="text/css"></style></defs><path d="M384 256a42.666667 42.666667 0 0 0-42.666667-42.666667H298.666667a42.666667 42.666667 0 0 0-42.666667 42.666667v554.666667a42.666667 42.666667 0 0 0 42.666667 42.666666h42.666666a42.666667 42.666667 0 0 0 42.666667-42.666666V256z m384 0a42.666667 42.666667 0 0 0-42.666667-42.666667h-42.666666a42.666667 42.666667 0 0 0-42.666667 42.666667v554.666667a42.666667 42.666667 0 0 0 42.666667 42.666666h42.666666a42.666667 42.666667 0 0 0 42.666667-42.666666V256z" p-id="1819"></path></svg>'
+        }
+    }
+
+    // const playingHandler=e=>{
+    // 	console.log('playing')
+    // }
+
+    const loadedmetadataHandler = e => {
+        switchPlay()
+        changeMusic()
+    }
+
+    const proHandler = e => {
+        console.log(bar.style.width)
+        bar.style.width = e.offsetX + 'px'
+        audio.currentTime = audio.duration * (e.offsetX / 300)
+        music.time = audio.currentTime
+        socket.emit('play', JSON.stringify(music))
+    }
+
+    const playHandler = e => {
+        console.log(audio.paused, music.paused)
+        if (audio.paused) {
+            audio.play()
+            play.innerHTML = '<svg t="1545519893916" class="icon" style="" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1818" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20"><defs><style type="text/css"></style></defs><path d="M384 256a42.666667 42.666667 0 0 0-42.666667-42.666667H298.666667a42.666667 42.666667 0 0 0-42.666667 42.666667v554.666667a42.666667 42.666667 0 0 0 42.666667 42.666666h42.666666a42.666667 42.666667 0 0 0 42.666667-42.666666V256z m384 0a42.666667 42.666667 0 0 0-42.666667-42.666667h-42.666666a42.666667 42.666667 0 0 0-42.666667 42.666667v554.666667a42.666667 42.666667 0 0 0 42.666667 42.666666h42.666666a42.666667 42.666667 0 0 0 42.666667-42.666666V256z" p-id="1819"></path></svg>'
+        } else {
+            audio.pause()
+            play.innerHTML = '<svg t="1545519540091" class="icon" style="" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1091" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20"><defs><style type="text/css"></style></defs><path d="M185 956.9c-17.6 0-35.2-4.8-51-14.3-29.8-18-47.7-49.6-47.7-84.5V165.4c0-35 17.9-66.6 47.9-84.6s66.4-18.9 97.2-2.5l654.4 349.1c32.3 17.3 52.4 50.7 52.3 87.4-0.1 36.7-20.4 70-52.8 87.1L231 945.5c-14.6 7.6-30.3 11.4-46 11.4z m27.4-746V813l568.8-298.7-568.8-303.4z" fill="#555555" p-id="1092"></path></svg>'
+        }
+        music.paused = audio.paused
+
+        socket.emit('play', JSON.stringify(music))
+    }
+
+    const updatePro = () => {
+        music.time = audio.currentTime
+        bar.style.width = 300 * (music.time / audio.duration) + 'px'
+
+    }
+
+    // audio.controller.addEventListener('click', playingHandler)
+    // volume.addEventListener('click', volumeHandler)
+    pro.addEventListener('click', proHandler)
+    play.addEventListener('click', playHandler)
+    audio.addEventListener('loadedmetadata', loadedmetadataHandler)
+    setInterval(updatePro, 1000)
+    </script>
+</body>
+
+</html>
