@@ -51,6 +51,9 @@
     		margin:center;
     		flex-direction: column;
     	}
+    	body::before{
+    		position: relative;
+    	}
     	body{
     		display: flex;
     		align-items: center;
@@ -58,6 +61,7 @@
     		height: 100vh;
     		flex-direction: row;
     		cursor: default;
+    		overflow-y: hidden;
     	}
     	#volume{
 			margin-left: 3px;
@@ -75,15 +79,28 @@
 			background: #1ff3;
     	}
 		#list{
-			height: 100px;
+			/*height: 12vh;*/
+			max-height: 250px;
 			overflow-y: scroll;
 
+		}
+		img{
+			height: 100vh;
+			width: 100%;
+			z-index: -1;
+			position: absolute;
+			opacity: 0.3;
+			filter: blur(5px);
+		}
+		.icon:hover{
+			fill: #affa;
 		}
     </style>
 </head>
 
 <body>
-	<!-- <video src="" id="video"></video> -->
+    <!-- <video src="" id="video"></video> -->
+    <img src="	background.jpg" alt="">
     <audio>
         <source src="" type="audio/mp3">
         Your browser does not support the audio element.
@@ -116,7 +133,6 @@
         </ul>
     </div>
     <script>
-
     let socket = io('http://' + window.document.location.host)
     let music = {}
     let fired = true
@@ -130,6 +146,8 @@
     const volume = document.querySelector('#volume')
     const list = document.querySelector('#list')
     const title = document.querySelector('#title')
+
+  
 
     const changeMusic = () => {
         audio.currentTime = music.time
@@ -147,13 +165,14 @@
         music.src = song
         audio.src = "music/" + song
         music.time = 0
-        title.innerHTML = music.src
-
+        title.innerHTML = music.src.split('.mp3')[0]
+        console.log(playlist)
+        music.idx = playlist.indexOf(song)
         socket.emit('switchSong', JSON.stringify(music))
     }
 
     const changeTitle = () => {
-        title.innerHTML = music.src
+        title.innerHTML = music.src.split('.mp3')[0]
     }
 
 
@@ -161,14 +180,14 @@
         // renew the position of balls
         music = JSON.parse(data)
         source.src = 'music/' + music.src
-        title.innerHTML = music.src
+        title.innerHTML = music.src.split('.mp3')[0]
     })
 
     socket.on('playlist', function(data) {
         // renew the position of balls
         playlist = JSON.parse(data).playlist
         playlist.forEach(s => {
-            list.innerHTML += `<li class='songlist' onclick='switchSong("${s}")'><div>${s}</div></li>`
+            list.innerHTML += `<li class='songlist' onclick='switchSong("${s}")'>${s.split('.mp3')[0]}</li>`
         })
 
     })
@@ -186,7 +205,7 @@
         music = JSON.parse(data)
         switchPlay()
         audio.src = "music/" + music.src
-        title.innerHTML = music.src
+        title.innerHTML = music.src.split('.mp3')[0]
 
         // changeMusic()
         console.log(music)
@@ -237,11 +256,21 @@
 
     }
 
+    const endedHandler = e => {
+        music.idx = (music.idx + 1) % playlist.length
+        music.src = playlist[music.idx]
+        music.time = 0
+        title.innerHTML = music.src.split('.mp3')[0]
+        audio.src = "music/" + music.src
+        console.log(music.idx, music.src)
+    }
+
     // audio.controller.addEventListener('click', playingHandler)
     // volume.addEventListener('click', volumeHandler)
     pro.addEventListener('click', proHandler)
     play.addEventListener('click', playHandler)
     audio.addEventListener('loadedmetadata', loadedmetadataHandler)
+    audio.addEventListener('ended', endedHandler)
     setInterval(updatePro, 1000)
     </script>
 </body>

@@ -14,22 +14,23 @@ const root = path.join(__dirname, 'public', 'music')
 let playlist = fs.readdirSync(root)
 let music = {
     src: playlist[0],
+    idx: 0,
     time: 0,
     volume: 1,
     paused: true
 }
 
 
-app.use(express.static(__dirname + ROOT_DIR))
+app.use(express.static(path.join(__dirname, ROOT_DIR)))
 
 
 server.listen(PORT)
 
 io.on('connection', function(socket) {
-    socket.emit('on', JSON.stringify(music))
     socket.emit('playlist', JSON.stringify({
         playlist
     }))
+    socket.emit('on', JSON.stringify(music))
     socket.on('play', data => {
         music = JSON.parse(data)
         socket.broadcast.emit('play', data)
