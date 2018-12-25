@@ -6,103 +6,103 @@
     <script src="/socket.io/socket.io.js"></script>
     <title>Live-Music</title>
     <style>
-        ::-webkit-scrollbar-thumb:horizontal { /*水平滚动条的样式*/
-    width: 4px;
-    background-color: #CCCCCC;
-    -webkit-border-radius: 6px;
-}
-::-webkit-scrollbar-track-piece {
-    background-color: #fff; /*滚动条的背景颜色*/
-    -webkit-border-radius: 0; /*滚动条的圆角宽度*/
-}
-::-webkit-scrollbar {
-    width: 10px; /*滚动条的宽度*/
-    height: 8px; /*滚动条的高度*/
-}
-::-webkit-scrollbar-thumb:vertical { /*垂直滚动条的样式*/
-    height: 50px;
-    background-color: #9992;
-    -webkit-border-radius: 4px;
-    outline: 2px solid #fff;
-    outline-offset: -2px;
-    border: 2px solid #fff;
-}
-::-webkit-scrollbar-thumb:hover { /*滚动条的hover样式*/
-    height: 50px;
-    background-color: #9f9f9f33;
-    -webkit-border-radius: 4px;
-}
+        ::-webkit-scrollbar-thumb:horizontal { 
+            width: 4px;
+            background-color: #CCCCCC;
+            -webkit-border-radius: 6px;
+        }
+        ::-webkit-scrollbar-track-piece {
+            background-color: #fff; 
+            -webkit-border-radius: 0; 
+        }
+        ::-webkit-scrollbar {
+            width: 10px; 
+            height: 8px; 
+        }
+        ::-webkit-scrollbar-thumb:vertical { 
+            height: 50px;
+            background-color: #9992;
+            -webkit-border-radius: 4px;
+            outline: 2px solid #fff;
+            outline-offset: -2px;
+            border: 2px solid #fff;
+        }
+        ::-webkit-scrollbar-thumb:hover { 
+            height: 50px;
+            background-color: #9f9f9f33;
+            -webkit-border-radius: 4px;
+        }
 
         .progress{
-        	/*margin-left: 5px;*/
-    		height: 5px;
-    		width: 300px;
-    		background: #bbb4;
-    		/*position: absolute;*/
-    	}
-		#bar{
-    		background: #7ff;
-    		position: relative;
-    		width: 0px;
-    	}
-    	#container{
-    		display: flex;
-    		align-items: center;
-    		margin:center;
-    		flex-direction: column;
-    	}
-    	body::before{
-    		position: relative;
-    	}
-    	body{
-    		display: flex;
-    		align-items: center;
-    		justify-content: center;
-    		height: 100vh;
-    		flex-direction: row;
-    		cursor: default;
-    		overflow-y: hidden;
+            /*margin-left: 5px;*/
+            height: 5px;
+            width: 300px;
+            background: #bbb4;
+            /*position: absolute;*/
+        }
+        #bar{
+            background: #7ff;
+            position: relative;
+            width: 0px;
+        }
+        #container{
+            display: flex;
+            align-items: center;
+            margin:center;
+            flex-direction: column;
+        }
+        body::before{
+            position: relative;
+        }
+        body{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            flex-direction: row;
+            cursor: default;
+            overflow-y: hidden;
 
-    	}
-    	#volume{
-			margin-left: 3px;
-    	}
-    	#long{
-    		display: flex;
-    		align-items: center;
-    	}
-    	.songlist{
-    		list-style: none;
-    		border: 0.5px solid #aff3 ;
-    		background: #aff1;
-    	}
-    	.songlist:hover{
-			background: #1ff3;
-    	}
-		#list{
-			/*height: 12vh;*/
-			max-height: 250px;
-			overflow-y: scroll;
+        }
+        #volume{
+            margin-left: 3px;
+        }
+        #long{
+            display: flex;
+            align-items: center;
+        }
+        .songlist{
+            list-style: none;
+            border: 0.5px solid #aff3 ;
+            background: #aff1;
+        }
+        .songlist:hover{
+            background: #1ff3;
+        }
+        #list{
+            /*height: 12vh;*/
+            max-height: 250px;
+            overflow-y: scroll;
 
-		}
-		img{
-			height: 100vh;
-			width: 100%;
-			z-index: -1;
-			position: absolute;
-			opacity: 0.3;
-			filter: blur(12px);
-		}
-		.icon:hover{
-			fill: #affa;
-		}
+        }
+        img{
+            height: 100vh;
+            width: 100%;
+            z-index: -1;
+            position: absolute;
+            opacity: 0.3;
+            filter: blur(12px);
+        }
+        .icon:hover{
+            fill: #affa;
+        }
     </style>
 </head>
 
 <body>
-        <!-- <video src="" id="video"></video> -->
-    <img src="	background.jpg" alt="">
- <!--     <canvas height="100%" width="100%" style="position: fixed;left: 0;top: 0;pointer-events: none;" id="canvas_snow"></canvas> -->
+    <!-- <video src="" id="video"></video> -->
+    <img src="  background.jpg" alt="">
+    <!--     <canvas height="100%" width="100%" style="position: fixed;left: 0;top: 0;pointer-events: none;" id="canvas_snow"></canvas> -->
     <audio>
         <source src="" type="audio/mp3">
         Your browser does not support the audio element.
@@ -136,157 +136,154 @@
     </div>
     <script>
     requestAnimationFrame = window.requestAnimationFrame ||
-            window.mozRequestAnimationFrame ||
-            window.webkitRequestAnimationFrame ||
-            window.msRequestAnimationFrame ||
-            window.oRequestAnimationFrame ||
-            function (callback) {
-                setTimeout(callback, 1000 / 60);
-            };
+        window.mozRequestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        function(callback) {
+            setTimeout(callback, 1000 / 60);
+        };
 
-        /**
-         * Snow Class
-         * @param {int}   x      
-         * @param {int}   y      
-         * @param {int}   radius 
-         * @param {Function} fn     Formular to calculate x pos and y pos
-         */
-        function Snow(x, y, radius, fn) {
-            this.x = x;
-            this.y = y;
-            this.r = radius;
-            this.fn = fn;
-        }
-        Snow.prototype.update = function () {
-            this.x = this.fn.x(this.x, this.y);
-            this.y = this.fn.y(this.y, this.y);
+    /**
+     * Snow Class
+     * @param {int}   x      
+     * @param {int}   y      
+     * @param {int}   radius 
+     * @param {Function} fn     Formular to calculate x pos and y pos
+     */
+    function Snow(x, y, radius, fn) {
+        this.x = x;
+        this.y = y;
+        this.r = radius;
+        this.fn = fn;
+    }
+    Snow.prototype.update = function() {
+        this.x = this.fn.x(this.x, this.y);
+        this.y = this.fn.y(this.y, this.y);
 
-            if (this.x > window.innerWidth ||
-                this.x < 0 ||
-                this.y > window.innerHeight ||
-                this.y < 0
-            ) {
-                this.x = getRandom('x');
-                this.y = 0;
-            }
+        if (this.x > window.innerWidth ||
+            this.x < 0 ||
+            this.y > window.innerHeight ||
+            this.y < 0
+        ) {
+            this.x = getRandom('x');
+            this.y = 0;
         }
-        Snow.prototype.draw = function (cxt) {
-            var grd = cxt.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.r);
-            grd.addColorStop(0, "rgba(255, 255, 255, 0.9)");
-            grd.addColorStop(.5, "rgba(255, 255, 255, 0.5)");
-            grd.addColorStop(1, "rgba(255, 255, 255, 0)");
-            cxt.fillStyle = grd;
-            cxt.fillRect(this.x - this.r, this.y - this.r, this.r * 2, this.r * 2);
-        }
+    }
+    Snow.prototype.draw = function(cxt) {
+        let grd = cxt.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.r);
+        grd.addColorStop(0, "rgba(255, 255, 255, 0.9)");
+        grd.addColorStop(.5, "rgba(255, 255, 255, 0.5)");
+        grd.addColorStop(1, "rgba(255, 255, 255, 0)");
+        cxt.fillStyle = grd;
+        cxt.fillRect(this.x - this.r, this.y - this.r, this.r * 2, this.r * 2);
+    }
 
-        /**
-         * Snowlist class
-         * Container to hold snow objects
-         */
-        SnowList = function () {
-            this.list = [];
+    /**
+     * Snowlist class
+     * Container to hold snow objects
+     */
+    SnowList = function() {
+        this.list = [];
+    }
+    SnowList.prototype.push = function(snow) {
+        this.list.push(snow);
+    }
+    SnowList.prototype.update = function() {
+        for (let i = 0, len = this.list.length; i < len; i++) {
+            this.list[i].update();
         }
-        SnowList.prototype.push = function (snow) {
-            this.list.push(snow);
+    }
+    SnowList.prototype.draw = function(cxt) {
+        for (let i = 0, len = this.list.length; i < len; i++) {
+            this.list[i].draw(cxt);
         }
-        SnowList.prototype.update = function () {
-            for (var i = 0, len = this.list.length; i < len; i++) {
-                this.list[i].update();
-            }
-        }
-        SnowList.prototype.draw = function (cxt) {
-            for (var i = 0, len = this.list.length; i < len; i++) {
-                this.list[i].draw(cxt);
-            }
-        }
-        SnowList.prototype.get = function (i) {
-            return this.list[i];
-        }
-        SnowList.prototype.size = function () {
-            return this.list.length;
-        }
+    }
+    SnowList.prototype.get = function(i) {
+        return this.list[i];
+    }
+    SnowList.prototype.size = function() {
+        return this.list.length;
+    }
 
-        /**
-         * Generate random x-pos, y-pos or fn functions
-         * @param  {string} option x|y|fnx|fny
-         * @return {int|Function} 
-         */
-        function getRandom(option) {
-            var ret, random;
-            switch (option) {
-                case 'x':
-                    ret = Math.random() * window.innerWidth;
-                    break;
-                case 'y':
-                    ret = Math.random() * window.innerHeight;
-                    break;
-                case 'r':
-                    ret = 2 + (Math.random() * 6);
-                    break;
-                case 'fnx':
-                    random = 27 + Math.random() * 100;
-                    ret = function (x, y) {
-                        return x + 0.5 * Math.sin(y / random);
-                    };
-                    break;
-                case 'fny':
-                    random = 0.4 + Math.random() * 1.4
-                    ret = function (x, y) {
-                        return y + random;
-                    };
-                    break;
-            }
-            return ret;
+    /**
+     * Generate random x-pos, y-pos or fn functions
+     * @param  {string} option x|y|fnx|fny
+     * @return {int|Function} 
+     */
+    function getRandom(option) {
+        let ret, random;
+        switch (option) {
+            case 'x':
+                ret = Math.random() * window.innerWidth;
+                break;
+            case 'y':
+                ret = Math.random() * window.innerHeight;
+                break;
+            case 'r':
+                ret = 2 + (Math.random() * 6);
+                break;
+            case 'fnx':
+                random = 27 + Math.random() * 100;
+                ret = function(x, y) {
+                    return x + 0.5 * Math.sin(y / random);
+                };
+                break;
+            case 'fny':
+                random = 0.4 + Math.random() * 1.4
+                ret = function(x, y) {
+                    return y + random;
+                };
+                break;
         }
+        return ret;
+    }
 
-        // Start snow
-        function startSnow() {
-            // Create canvas
-            var canvas = document.createElement('canvas'),
-                cxt;
-            canvas.height = window.innerHeight;
-            canvas.width = window.innerWidth;
-            canvas.setAttribute('style', 'position: fixed;left: 0;top: 0;pointer-events: none;');
-            canvas.setAttribute('id', 'canvas_snow');
-            document.getElementsByTagName('body')[0].appendChild(canvas);
-            cxt = canvas.getContext('2d');
-            // Create snow objects
-            var snowList = new SnowList();
-            for (var i = 0; i < 200; i++) {
-                var snow, randomX, randomY, randomR, randomFnx, randomFny;
-                randomX = getRandom('x');
-                randomY = getRandom('y');
-                randomR = getRandom('r');
-                randomFnx = getRandom('fnx');
-                randomFny = getRandom('fny');
-                snow = new Snow(randomX, randomY, randomR, {
-                    x: randomFnx,
-                    y: randomFny
-                });
-                snow.draw(cxt);
-                snowList.push(snow);
-            }
-            // Update snow position data, and redraw them in each frame
-            requestAnimationFrame(function () {
-                cxt.clearRect(0, 0, canvas.width, canvas.height);
-                snowList.update();
-                snowList.draw(cxt);
-                requestAnimationFrame(arguments.callee);
-            })
+    // Start snow
+    function startSnow() {
+        // Create canvas
+        let canvas = document.createElement('canvas'),
+            cxt;
+        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth;
+        canvas.setAttribute('style', 'position: fixed;left: 0;top: 0;pointer-events: none;');
+        canvas.setAttribute('id', 'canvas_snow');
+        document.getElementsByTagName('body')[0].appendChild(canvas);
+        cxt = canvas.getContext('2d');
+        // Create snow objects
+        let snowList = new SnowList();
+        for (let i = 0; i < 200; i++) {
+            let snow, randomX, randomY, randomR, randomFnx, randomFny;
+            randomX = getRandom('x');
+            randomY = getRandom('y');
+            randomR = getRandom('r');
+            randomFnx = getRandom('fnx');
+            randomFny = getRandom('fny');
+            snow = new Snow(randomX, randomY, randomR, {
+                x: randomFnx,
+                y: randomFny
+            });
+            snow.draw(cxt);
+            snowList.push(snow);
         }
+        // Update snow position data, and redraw them in each frame
+        requestAnimationFrame(function() {
+            cxt.clearRect(0, 0, canvas.width, canvas.height);
+            snowList.update();
+            snowList.draw(cxt);
+            requestAnimationFrame(arguments.callee);
+        })
+    }
 
-        // Handle window resize
-        window.onresize = function () {
-            var canvasSnow = document.getElementById('canvas_snow');
-            canvasSnow.width = window.innerWidth;
-            canvasSnow.height = window.innerHeight;
-        }
+    // Handle window resize
+    window.onresize = function() {
+        let canvasSnow = document.getElementById('canvas_snow');
+        canvasSnow.width = window.innerWidth;
+        canvasSnow.height = window.innerHeight;
+    }
 
-        // Let it snow O(”_”)0
-        startSnow();
-
-
-
+    // Let it snow O(”_”)0
+    startSnow();
 
     let socket = io('http://' + window.document.location.host)
     let music = {}
@@ -302,26 +299,25 @@
     const list = document.querySelector('#list')
     const title = document.querySelector('#title')
 
-  
+
 
     const changeMusic = () => {
         audio.currentTime = music.time
         audio.volume = music.volume
         if (music.paused) {
             audio.pause()
-        } else audio.play()
-        // audio.src = music.src
+        } else {
+            audio.play()
+        }
         bar.style.width = 300 * (music.time / audio.duration) + 'px'
 
     }
 
     const switchSong = song => {
-        console.log(song)
         music.src = song
         audio.src = "music/" + song
         music.time = 0
         title.innerHTML = music.src.split('.mp3')[0]
-        console.log(playlist)
         music.idx = playlist.indexOf(song)
         socket.emit('switchSong', JSON.stringify(music))
     }
@@ -332,14 +328,13 @@
 
 
     socket.on('on', function(data) {
-        // renew the position of balls
         music = JSON.parse(data)
         source.src = 'music/' + music.src
         title.innerHTML = music.src.split('.mp3')[0]
     })
 
     socket.on('playlist', function(data) {
-        // renew the position of balls
+        list.innerHTML = ''
         playlist = JSON.parse(data).playlist
         playlist.forEach(s => {
             list.innerHTML += `<li class='songlist' onclick='switchSong("${s}")'>${s.split('.mp3')[0]}</li>`
@@ -348,22 +343,17 @@
     })
 
     socket.on('play', function(data) {
-        // renew the position of balls
         music = JSON.parse(data)
         switchPlay()
         changeMusic()
-        console.log(music)
     })
 
     socket.on('switchSong', function(data) {
-        // renew the position of balls
         music = JSON.parse(data)
         switchPlay()
         audio.src = "music/" + music.src
         title.innerHTML = music.src.split('.mp3')[0]
 
-        // changeMusic()
-        console.log(music)
     })
 
     const switchPlay = () => {
@@ -374,17 +364,12 @@
         }
     }
 
-    // const playingHandler=e=>{
-    // 	console.log('playing')
-    // }
-
     const loadedmetadataHandler = e => {
         switchPlay()
         changeMusic()
     }
 
     const proHandler = e => {
-        console.log(bar.style.width)
         bar.style.width = e.offsetX + 'px'
         audio.currentTime = audio.duration * (e.offsetX / 300)
         music.time = audio.currentTime
@@ -392,7 +377,6 @@
     }
 
     const playHandler = e => {
-        console.log(audio.paused, music.paused)
         if (audio.paused) {
             audio.play()
             play.innerHTML = '<svg t="1545519893916" class="icon" style="" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1818" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20"><defs><style type="text/css"></style></defs><path d="M384 256a42.666667 42.666667 0 0 0-42.666667-42.666667H298.666667a42.666667 42.666667 0 0 0-42.666667 42.666667v554.666667a42.666667 42.666667 0 0 0 42.666667 42.666666h42.666666a42.666667 42.666667 0 0 0 42.666667-42.666666V256z m384 0a42.666667 42.666667 0 0 0-42.666667-42.666667h-42.666666a42.666667 42.666667 0 0 0-42.666667 42.666667v554.666667a42.666667 42.666667 0 0 0 42.666667 42.666666h42.666666a42.666667 42.666667 0 0 0 42.666667-42.666666V256z" p-id="1819"></path></svg>'
@@ -417,11 +401,10 @@
         music.time = 0
         title.innerHTML = music.src.split('.mp3')[0]
         audio.src = "music/" + music.src
-        console.log(music.idx, music.src)
     }
 
-    const mouseHandler=e=>{
-        
+    const mouseHandler = e => {
+
     }
 
     // audio.controller.addEventListener('click', playingHandler)
@@ -430,7 +413,7 @@
     play.addEventListener('click', playHandler)
     audio.addEventListener('loadedmetadata', loadedmetadataHandler)
     audio.addEventListener('ended', endedHandler)
-    document.addEventListener('mouseover',mouseHandler)
+    document.addEventListener('mouseover', mouseHandler)
     setInterval(updatePro, 1000)
     </script>
 </body>
